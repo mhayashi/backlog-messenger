@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Jasmine Test Runner</title>
+  <link rel="stylesheet" type="text/css" href="libs/jasmine/lib/jasmine.css">
+
+  <!-- include source files here... -->
+  <script language="JavaScript" type="text/javascript" src="libs/jquery-1.4.2.min.js"></script>
+  <script language="JavaScript" type="text/javascript" src="libs/jQuery-Plugins/cross-domain-ajax/jquery.xdomainajax.js"></script>
+  <script language="JavaScript" type="text/javascript" src="libs/backlog.js"></script>
+
+  <!-- include spec files here... -->
+</head>
+<body>
+  <div id="container"></div>
+  <script type="text/javascript">
+    $('#container').load('http://google.com'); // SERIOUSLY!
+    
+    // $.ajax({
+    //   url: 'http://news.bbc.co.uk',
+    //   type: 'GET',
+    //   success: function(res) {
+    //     var headline = $(res.responseText).find('a.tsh').text();
+    //     alert(headline);
+    //   }
+    // });
+
+    // var request = '<?xml version="1.0" encoding="utf-8"?>'
+    //   + '<methodCall>'
+    //   +   '<methodName>backlog.getUser</methodName>'
+    //   +     '<params>'
+    //   +       '<param>'
+    //   +         '<value>'
+    //   +           '<string>' + 'demo' + '</string>'
+    //   +         '</value>'
+    //   +       '</param>'
+    //   +     '</params>'
+    //   + '</methodCall>';
+    // $.ajax({
+    //   url: 'https://demo.backlog.jp/XML-RPC',
+    //   username: 'demo',
+    //   password: 'demo',
+    //   timeout: 3000, // spec.timeout || 3000,
+    //   type: 'POST', //spec.type || 'POST',
+    //   contentType: 'text/xml;charset=UTF-8', //spec.contentType || 'text/xml;charset=UTF-8',
+    //   dataType: 'xml',
+    //   data: request,
+    //   success: function(res) {
+    //     alert('success');
+    //   }
+    // });
+  </script>
+</body>
+</html>

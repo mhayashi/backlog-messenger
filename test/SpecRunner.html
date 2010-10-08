@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Jasmine Test Runner</title>
+  <link rel="stylesheet" type="text/css" href="libs/jasmine/lib/jasmine.css">
+  <script type="text/javascript" src="libs/jasmine/lib/jasmine.js"></script>
+  <script type="text/javascript" src="libs/jasmine/lib/jasmine-html.js"></script>
+
+  <!-- include source files here... -->
+  <script language="JavaScript" type="text/javascript" src="libs/jquery-1.4.2.min.js"></script>
+  <script language="JavaScript" type="text/javascript" src="libs/jQuery-Plugins/cross-domain-ajax/jquery.xdomainajax.js"></script>
+  <script language="JavaScript" type="text/javascript" src="libs/xmlrpc.js"></script>
+  <script language="JavaScript" type="text/javascript" src="libs/backlog.js"></script>
+
+  <!-- include spec files here... -->
+  <script type="text/javascript" src="spec/BacklogSpec.js"></script>
+</head>
+<body>
+  <div id="REMOVE_THIS_LINE_FROM_BUILD"><p>You must be trying to look at examples in the Jasmine source tree.</p><p>Please download a distribution version of Jasmine at <a href="http://pivotal.github.com/jasmine/">http://pivotal.github.com/jasmine/</a>.</p></div>
+  <script type="text/javascript">
+    jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+    jasmine.getEnv().execute();
+  </script>
+
+</body>
+</html>

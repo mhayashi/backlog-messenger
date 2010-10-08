@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+</head>
+<body>
+  <div>
+    <a href="#" onclick="openTab(chrome.extension.getURL('options.html'))">Options</a>
+  </div>
+  <script type="text/javascript">
+    function openTab(url) {
+      if (url.match(/^www/i)) {
+        url = "http://" + url;
+      }
+      window.open(url);
+    }
+  </script>
+</body>
+</html>

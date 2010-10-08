@@ -1,0 +1,33 @@
+body {
+}
+h1 {
+    font-size: 16px;
+    color: #0a3616;
+}
+h2 {
+    font-size: 14px;
+    color: #0a3616;
+}
+h3 {
+    color: #0a3616;
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+li {
+    margin: 4px;
+}
+.optionsArea {
+    border: 1px dashed #A4B874;
+    margin: 10px;
+    padding: 20px 10px 20px 10px;
+}
+#saveGeneralComplete, #saveTargetComplete {
+    display: none;
+    background-color: #D5FFDF;
+    color: #006A1B;
+    font-size: 14px;
+    width: 260px;
+    text-align: center;
+    margin: auto;
+    padding: 10px;
+}
