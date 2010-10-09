@@ -61,7 +61,7 @@ var backloglib = function(spec, my) {
       $(this).children('struct').children('member').each(function(){
         var name = $(this).children('name').text();
         if (name === 'created_user') {
-          result[name] = $(this).find('value struct member name').text();
+          result[name] = $(this).find('value struct member value').eq(0).text();
         } else if (name === 'created_on') {
           result[name] = $(this).children('value').text();
         } else if (name === 'content') {

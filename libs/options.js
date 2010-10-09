@@ -67,6 +67,7 @@ var saveOptions = function () {
   var createTimeoutFunction = function(issue, store) {
     return function() {
       backlog.getComments(issue.id, function(comments){
+        console.log(comments);
         // TODO: save comments
         for (var m = 0, lenm = comments.length; m < lenm; m++) {
           localStorage.setItem('comment:'+(comments[m].id), JSON.stringify(comments[m]));
