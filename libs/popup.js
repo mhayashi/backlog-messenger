@@ -1,19 +1,5 @@
 $(function() {
     // TODO dummyデータ
-    var data = [
-        {
-            created_user: 'agata',
-            created_on: '20050606115644',
-            content: 'コメントです1',
-            updated_on: '20050606115644'
-        },
-        {
-            created_user: 'hayashi',
-            created_on: '20050606115644',
-            content: 'コメントです2',
-            updated_on: '20050606115644'
-        }
-    ];
     var adddata = [
         {
             created_user: 'agata',
@@ -30,7 +16,16 @@ $(function() {
     ];
     
     var model = {
-        comments: data,
+        comments: [],
+        init: function() {
+            var commentids = JSON.parse(localStorage.getItem('commentIds'));
+            for (var i in commentids) {
+                var c = JSON.parse(localStorage.getItem('comment:'+commentids[i]));
+                console.log(c);
+                this.comments.push(c);
+            }
+            view.update();
+        },
         setComment: function(comments) {
             this.comments = comments;
             view.update();
@@ -67,7 +62,7 @@ $(function() {
             .append(
                 $('<img>')
                 .attr('class', 'comment_icon')
-                .attr('src', 'https://www.backlog.jp/originalicons/icons/gif/backlog_icon_51.gif')
+                .attr('src', 'img/' + comment.created_user + '.jpg')
             )
             .append(
                 $('<div>')
@@ -97,8 +92,8 @@ $(function() {
     
     var controller = {
         init: function() {
+            model.init();
             // TODO テスト用
-            model.setComment(data);
             $('#add').click(function() {
                 model.addComments(adddata);
             });

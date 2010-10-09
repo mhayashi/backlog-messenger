@@ -17,10 +17,6 @@
   <script type="text/javascript" src="libs/main.js"></script>
   <script type="text/javascript" src="libs/popup.js"></script>
   <script type="text/javascript">
-    var commentids = JSON.parse(localStorage.getItem('commentIds'));
-    for (var i in commentids) {
-      console.log(JSON.parse(localStorage.getItem('comment:'+commentids[i])));
-    }
     function openTab(url) {
       if (url.match(/^www/i)) {
         url = "http://" + url;
