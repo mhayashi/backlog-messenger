@@ -108,7 +108,7 @@ var backloglib = function(spec, my) {
   };
   that.getUsers = getUsers;
 
-  var findIssue = function(projectId, assignerId, callback) {
+  var findIssue = function(projectId, assignerId, updated_on_min, callback) {
     projectId = parseInt(projectId);
     if (!projectId) {
       throw('Project ID is ' + projectId);
@@ -118,7 +118,11 @@ var backloglib = function(spec, my) {
       throw('Assigner ID is ' + assignerId);
     }
     var rpc = new XMLRPCMessage('backlog.findIssue');
-    rpc.addParameter({ projectId: projectId, assignerId: assignerId });
+    if (updated_on_min) {
+      rpc.addParameter({ projectId: projectId, assignerId: assignerId, updated_on_min: updated_on_min });
+    } else {
+      rpc.addParameter({ projectId: projectId, assignerId: assignerId });
+    }
     $.ajax({
       data: rpc.xml(),
       success: function(data, status, xhr) {
@@ -147,6 +151,24 @@ var backloglib = function(spec, my) {
   };
   that.getComments = getComments;
 
+  var updateIssue = function(issueKey) {
+    issueKey = parseInt(issueKey);
+    if (!issueKey) {
+      throw('Issue key is ' + issueKey);
+    }
+    var rpc = new XMLRPCMessage('backlog.updateIssue');
+    rpc.addParameter(issueKey);
+    $.ajax({
+      data: rpc.xml(),
+      success: function(data, status, xhr) {
+        var comments = my.parseComments(data);
+        if (comments) {
+          callback(comments);
+        }
+      }
+    });
+  };
+  
   return that;
 };
 
