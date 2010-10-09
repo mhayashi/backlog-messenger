@@ -9,14 +9,16 @@ var backloglib = function(spec, my) {
   
   my.defaults = {
     url: 'https://' + spec.spaceId + '.backlog.jp/XML-RPC',
-    userid: spec.userid,
+    username: spec.userId,
     password: spec.password,
     type: 'POST',
     dataType: 'xml',
     error: function (XMLHttpRequest, textStatus, errorThrown) {
+      console.log(XMLHttpRequest);
       throw(textStatus + ':' + errorThrown);
     }
   };
+  console.log(spec);
   $.ajaxSetup(my.defaults);
 
   my.parseData = function(data) {

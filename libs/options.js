@@ -6,64 +6,77 @@ var restoreOptions = function () {
 
 var saveOptions = function () {
 
-  localStorage.setItem('spaceId', $('input[name=spaceId]').val());
-  localStorage.setItem('userId', $('input[name=userId]').val());
-  localStorage.setItem('password', $('input[name=password]').val());
+  var spaceId = $('input[name=spaceId]').val();
+  var userId = $('input[name=userId]').val();
+  var password = $('input[name=password]').val();
+  
+  localStorage.setItem('spaceId', spaceId);
+  localStorage.setItem('userId', userId);
+  localStorage.setItem('password', password);
 
   // get all comments
   
   var backlog = getBacklog();
-  var projects, users, issues = [], comments;
-  var getIssue = false;
+  var projects = [], issues = [];
+  var projects_len = 0;
+  var getIssue = 0;
   var projectNo = 0, ownId = 0;
   var commentIds = [];
-  
+
   projects = backlog.getProjects(function(projects) {
     console.log(projects);
-    localStorage.setItem('project:length', len);
-    for (var i = 0, len = projects.length; i < len; i++) {
+    for (var i = 0, leni = projects.length; i < leni; i++) {
       localStorage.setItem('project:'+projects[i].id, JSON.stringify(projects[i]));
-
-      users = backlog.getUsers(projects[i].id, function(users) {
-        console.log(users);
+      backlog.getUsers(projects[i].id, function(users) {
+        //console.log(users);
+        for (var j = 0, lenj = users.length; j < lenj; j++) {
+          localStorage.setItem('user:'+users[j].name, users[j].id);
+          if (users[j].name === userId) {
+            ownId = users[j].id;
+          }
+        }
+        if (++getIssue >= projects.length) {
+          for (var k = 0, lenk = projects.length; k < lenk; k++) {
+            backlog.findIssue(projects[k].id, ownId, "", function(_issues) {
+              console.log(_issues);
+              //issues.concat(_issues);
+              issues = _issues;
+              for (var l = 0, lenl = issues.length; l < lenl; l++) {
+                // we have to request so much, so we need to set intervals
+                setTimeout(createTimeoutFunction(issues[l]), 5000*l);
+                // setTimeout(function(){
+                //   console.log(issues);
+                //   backlog.getComments(issues[l].id, function(comments){
+                //     // TODO: save comments
+                //     for (var m = 0, lenm = comments.length; m < lenm; m++) {
+                //       localStorage.setItem('comment:'+(comments[m].id), comments[m]);
+                //       commentIds.push(comments[m].id);
+                //     }
+                //   });
+                // }, 1000*i);
+              }
+            });
+          }
+          localStorage.setItem('commentIds', commentIds.toString());
+          localStorage.setItem('prevTime', JSON.stringify(new Date().toString()));
+          
+        }
       });
-    }
-    getIssue = true;
-    for (i = 0, len = users.length; j < len; j++) {
-      localStorage.setItem('user:'+users[j].name, users[j].id);
-      if (users[j] === localStorage.getItem('userId')) {
-        ownId = users[j];
-      }
     }
   });
 
-  // waiting getIssue turns on
-  var timer = setInterval(function() {
-    if (!getIssue) {
-      return;
-    } else {
-      clearInterval(timer);
-      for (var i = 0, len1 = projects.length; i < len1; i++) {
-        issues = backlog.findIssue(i, ownId, "", function(issues) {
-          console.log(issues);
-          for (var j = 0, len2 = issues.length; j < len2; j++) {
-            // we have to request so much, so we need to set intervals
-            setTimeout(function(){
-              backlog.getComments(issues[i].id, function(comments){
-                // TODO: save comments
-                for (var l = 0, len3 = comments.length; l < len3; l++) {
-                  localStorage.setItem('comment:'+(comments[i].id), comments[i]);
-                  commentIds.push(comments[i].id);
-                }
-              });
-            }, 1000*i);
-          }
-        });
-      }
-      localStorage.setItem('commentIds', commentIds.toString());
-      localStorage.setItem('prevTime', JSON.stringify(new Date().toString()));
-    }
-  }, 500);
+  // ループがコールバックを呼ぶより先にまわってしまうので関数で issue を閉じ込める
+  var createTimeoutFunction = function(issue) {
+    return function() {
+      backlog.getComments(issue.id, function(comments){
+        // TODO: save comments
+        for (var m = 0, lenm = comments.length; m < lenm; m++) {
+          localStorage.setItem('comment:'+(comments[m].id), comments[m]);
+          commentIds.push(comments[m].id);
+        }
+      });
+    };
+  };
 };
 
 restoreOptions();
