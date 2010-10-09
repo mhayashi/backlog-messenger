@@ -1,0 +1,37 @@
+body {
+    width: 450px;
+}
+
+#main {
+}
+
+#comments {
+    padding: 5px;
+}
+
+#comments > div {
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 10px;
+}
+
+.comment_icon {
+    float: left;
+    width: 32px;
+    margin-right: 5px;
+}
+.comment_header {
+}
+.comment_content {
+    padding: 2px;
+}
+.comment_footer {
+    text-align: right;
+}
+.comment_created_user {
+    font-weight: bold;
+}
+.comment_updated_on {
+    color: #777;
+}
