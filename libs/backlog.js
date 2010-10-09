@@ -68,6 +68,8 @@ var backloglib = function(spec, my) {
           result[name] = $(this).children('value').text();
         } else if (name === 'updated_on') {
           result[name] = $(this).children('value').text();
+        } else if (name === 'id' && ($(this).closest('data value struct').length === 1)) {
+          result[name] = $(this).children('value').text();
         }
       });
       if (result['created_user']) {

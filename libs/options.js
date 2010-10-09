@@ -43,7 +43,7 @@ var saveOptions = function () {
               issues = _issues;
               for (var l = 0, lenl = issues.length; l < lenl; l++) {
                 // we have to request so much, so we need to set intervals
-                setTimeout(createTimeoutFunction(issues[l]), 5000*l);
+                setTimeout(createTimeoutFunction(issues[l], l===lenl-1 ), 5000*l);
                 // setTimeout(function(){
                 //   console.log(issues);
                 //   backlog.getComments(issues[l].id, function(comments){
@@ -57,22 +57,23 @@ var saveOptions = function () {
               }
             });
           }
-          localStorage.setItem('commentIds', commentIds.toString());
           localStorage.setItem('prevTime', JSON.stringify(new Date().toString()));
-          
         }
       });
     }
   });
 
   // ループがコールバックを呼ぶより先にまわってしまうので関数で issue を閉じ込める
-  var createTimeoutFunction = function(issue) {
+  var createTimeoutFunction = function(issue, store) {
     return function() {
       backlog.getComments(issue.id, function(comments){
         // TODO: save comments
         for (var m = 0, lenm = comments.length; m < lenm; m++) {
-          localStorage.setItem('comment:'+(comments[m].id), comments[m]);
+          localStorage.setItem('comment:'+(comments[m].id), JSON.stringify(comments[m]));
           commentIds.push(comments[m].id);
+        }
+        if (store) {
+          localStorage.setItem('commentIds', JSON.stringify(commentIds));
         }
       });
     };
