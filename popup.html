@@ -8,21 +8,22 @@
 </head>
 <body>
   <div id="main">
-    <a href="#" onclick="openTab(chrome.extension.getURL('options.html'))">Options</a>
-    <a id="add" href="#">Add</a>
+    <a id="options" href="#">Options</a>
+    <a id="refresh" href="#">Refresh</a>
+    <div id="editor">
+      <textarea></textarea>
+      <div id="send-button">
+        <select id="issue"></select>
+        <button id="send">Send</button>
+      </div>
+    </div>
     <div id="comments">
     </div>
   </div>
   <script type="text/javascript" src="libs/3rdparty/jquery-1.4.2.min.js"></script>
-  <script type="text/javascript" src="libs/main.js"></script>
+  <script type="text/javascript" src="libs/3rdparty/xmlrpc.js"></script>
+  <script type="text/javascript" src="libs/backlog.js"></script>
+  <script type="text/javascript" src="libs/utils.js"></script>
   <script type="text/javascript" src="libs/popup.js"></script>
-  <script type="text/javascript">
-    function openTab(url) {
-      if (url.match(/^www/i)) {
-        url = "http://" + url;
-      }
-      window.open(url);
-    }
-  </script>
 </body>
 </html>

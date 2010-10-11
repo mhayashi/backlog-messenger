@@ -2,18 +2,41 @@
 <script type="text/javascript" src="libs/3rdparty/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="libs/3rdparty/xmlrpc.js"></script>
 <script type="text/javascript" src="libs/backlog.js"></script>
-<script type="text/javascript" src="libs/main.js"></script>
+<script type="text/javascript" src="libs/utils.js"></script>
 <script type="text/javascript">
 
-var interval = localStorage.getItem('checkInterval');
-if (!interval) {
-  interval = 300;
-  localStorage.setItem('checkInterval', interval);
+var checkInterval = function() {
+  var interval = localStorage.getItem('refreshInterval');
+  if (!interval) {
+    interval = 300;
+    localStorage.setItem('refreshInterval', interval);
+  } else if (interval < 180) {
+    interval = 180;
+    localStorage.setItem('refreshInterval', interval);
+  }
+  return interval;
 }
-  
-setInterval(function() {
-  checkComment();
-}, interval*1000);
 
+var refreshTimer;
+
+var refresh = function(isInit) {
+  getComments(isInit);
+  clearTimeout(refreshTimer);
+  var interval = checkInterval();
+  console.log(new Date().toString() + ": " + interval);
+  refreshTimer = setTimeout(refresh, interval*1000);
+};
+
+(function () {
+  checkInterval();
+  if (!(localStorage.getItem('userId') &&
+        localStorage.getItem('password') &&
+        localStorage.getItem('spaceId'))) {
+    openTab(chrome.extension.getURL('options.html'));
+  } else {
+    refresh();
+  }
+})();
+           
 </script>
 </html>

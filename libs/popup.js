@@ -1,104 +1,162 @@
 $(function() {
-    // TODO dummyデータ
-    var adddata = [
-        {
-            created_user: 'agata',
-            created_on: '20050606115644',
-            content: 'コメントです3',
-            updated_on: '20050606115644'
-        },
-        {
-            created_user: 'hayashi',
-            created_on: '20050606115644',
-            content: 'コメントです4',
-            updated_on: '20050606115644'
-        }
-    ];
-    
-    var model = {
-        comments: [],
-        init: function() {
-            var commentids = JSON.parse(localStorage.getItem('commentIds'));
-            for (var i in commentids) {
-                var c = JSON.parse(localStorage.getItem('comment:'+commentids[i]));
-                console.log(c);
-                this.comments.push(c);
-            }
-            view.update();
-        },
-        setComment: function(comments) {
-            this.comments = comments;
-            view.update();
-        },
-        addComments: function(comments) {
-            this.comments.concat(comments);
-            view.update(comments);
-        }
-    };
-    
-    var view = {
-        $comments: $('#comments'),
-        update: function(comments) {
-            if (comments) {
-                this.appendComments(comments);            
-            } else {
-                view.$comments.html('');
-                this.appendComments(model.comments);
-            }
-        },
-        appendComments: function(comments) {
-            $.each(comments, function(i, comment) {
-                var $c = view.createCommentElement(comment);
-                $c.hide();
-                view.$comments.prepend($c);
-                $c.animate(
-                    {height: "toggle", opacity: "toggle"},
-                    {duration: "fast", easing: "linear"}
-                );
-            });        
-        },
-        createCommentElement: function(comment) {
-            return $('<div>')
+  var model = {
+    comments: [],
+    init: function() {
+      var commentids = JSON.parse(localStorage.getItem('commentIds'));
+      commentids.sort();
+      var end = commentids.length;
+      var begin = end-100 < 0 ? 0 : end-100;
+      this.getComments(commentids.slice(begin, end));
+      view.update();
+    },
+    setComment: function(comments) {
+      this.comments = comments;
+      view.update();
+    },
+    addComments: function(commentids) {
+      var _comments = this.getComments(commentids);
+      view.update(_comments);
+    },
+    getComments: function(commentids) {
+      if (!commentids) {
+        return null;
+      }
+      var _comments = [];
+      for (var i = 0, len = commentids.length; i < len; i++) {
+        var c = JSON.parse(localStorage.getItem('comment:'+commentids[i]));
+        c.issue = JSON.parse(localStorage.getItem('issue:'+c.issueId));
+        console.log(c);
+        this.comments.push(c);
+        _comments.push(c);
+      }
+      return _comments;
+    }
+  };
+  
+  var view = {
+    $editor: $('#editor'),
+    $comments: $('#comments'),
+    update: function(comments) {
+      this.initEditor();
+      if (comments) {
+        this.appendComments(comments);            
+      } else {
+        view.$comments.html('');
+        this.appendComments(model.comments);
+      }
+    },
+    initEditor: function(){
+      var issueIds = JSON.parse(localStorage.getItem('issueIds'));
+      $('#issue').remove('option');
+      for (var i = 0, len = issueIds.length; i < len; i++) {
+        var issue = JSON.parse(localStorage.getItem('issue:'+issueIds[i]));
+        $('#issue').append(
+          $('<option>')
+          .attr('value', issue.key)
+          .text(issue.key + ' (' + issue.summary + ')'));
+      }
+    },
+    appendComments: function(comments) {
+      $.each(comments, function(i, comment) {
+        var $c = view.createCommentElement(comment);
+        $c.hide();
+        view.$comments.prepend($c);
+        $c.animate(
+          {height: "toggle", opacity: "toggle"},
+          {duration: "fast", easing: "linear"}
+        );
+      });        
+    },
+    getIcon: function(username) {
+      return JSON.parse(localStorage.getItem('icon:' + username));
+    },
+    createCommentElement: function(comment) {
+      var icon = this.getIcon(comment.created_user.name);
+      var spaceId = localStorage.getItem('spaceId');
+      var link = '';
+      if (comment.issue) {
+        link = '<a href="'+comment.issue.url+'#comment-'+comment.id+'" target="_blank">'+comment.issue.key+' ('+comment.issue.summary+')</a>';
+      }
+      return $('<div>')
+        .attr('class', 'comment')
+        .append(
+          $('<div>')
+            .attr('class', 'comment_icon')
             .append(
-                $('<img>')
-                .attr('class', 'comment_icon')
-                .attr('src', 'img/' + comment.created_user + '.jpg')
+              $('<img>')
+                .attr('src', 'data:'+icon.content_type+';base64,'+icon.data)
+            )
+        )
+        .append(
+          $('<div>')
+            .attr('class', 'comment_header')
+            .append(
+              $('<div>')
+                .attr('class', 'comment_created_user')
+                .text(comment.created_user.name)
             )
             .append(
-                $('<div>')
-                .attr('class', 'comment_header')
-                .append(
-                    $('<span>')
-                    .attr('class', 'comment_created_user')
-                    .text(comment.created_user)
-                )
+              $('<div>')
+                .attr('class', 'comment_link')
+                .html(link)
             )
+        )
+        .append(
+          $('<div>')
+            .attr('class', 'comment_content')
+            .html(comment.content)
+        )
+        .append(
+          $('<div>')
+            .attr('class', 'comment_footer')
             .append(
-                $('<div>')
-                .attr('class', 'comment_content')
-                .html(comment.content)
+              $('<span>')
+                .attr('class', 'comment_updated_on')
+                .text(comment.updated_on.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, "$1-$2-$3 $4:$5:$6"))
             )
-            .append(
-                $('<div>')
-                .attr('class', 'comment_footer')
-                .append(
-                    $('<span>')
-                    .attr('class', 'comment_updated_on')
-                    .text(comment.updated_on.replace(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, "$1-$2-$3 $4:$5:$6"))
-                )
-            );
+        );
+    }
+  };
+
+  var controller = {
+    init: function() {
+
+      if (!(localStorage.getItem('userId') &&
+            localStorage.getItem('password') &&
+            localStorage.getItem('spaceId'))) {
+        openTab(chrome.extension.getURL('options.html'));
+        return;
+      }
+      
+      $('#options').click(function() {
+        openTab(chrome.extension.getURL('options.html'));
+      });
+      $('#refresh').click(function() {
+        chrome.extension.getBackgroundPage().refresh();
+      });
+      $('#send').click(function() {
+        var textarea = $('#editor textarea');
+        if (textarea.val()) {
+          sendComment($('#issue').val(), textarea.val(), function(issue) {
+            chrome.extension.getBackgroundPage().refresh();
+            textarea.val('');
+          });
         }
-    };
-    
-    var controller = {
-        init: function() {
-            model.init();
-            // TODO テスト用
-            $('#add').click(function() {
-                model.addComments(adddata);
-            });
+      });
+
+      model.init();
+      
+      chrome.browserAction.setBadgeText({ text: ''});
+
+      chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+        if (request.newComments) {
+          model.addComments(request.newComments);
+          chrome.browserAction.setBadgeText({ text: '' });
         }
-    };
-    
-    controller.init();
+      });
+    }
+  };
+
+  controller.init();
+ 
 });

@@ -1,12 +1,28 @@
 body {
     width: 450px;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 #main {
 }
 
+textarea {
+    font-size: 13px;
+    margin: 3px;
+    width: 430px;
+    height: 60px;
+}
+#send-button {
+    text-align: right;
+    padding-right: 10px;
+}
+
 #comments {
     padding: 5px;
+    max-height: 400px;
+    overflow-y: show;
+    overflow-x: hidden;
 }
 
 #comments > div {
@@ -16,22 +32,40 @@ body {
     padding: 10px;
 }
 
+.comment {
+}
+
 .comment_icon {
     float: left;
     width: 32px;
+    height: 100%;
     margin-right: 5px;
+}
+.comment_icon img {
 }
 .comment_header {
 }
 .comment_content {
     padding: 2px;
+    float: left;
 }
 .comment_footer {
-    text-align: right;
+    padding-bottom: 8px;
+    clear: both;
 }
 .comment_created_user {
     font-weight: bold;
+    float: left;
 }
 .comment_updated_on {
     color: #777;
+    float: right;
+}
+.comment_link {
+    right: 0;
+    text-align: right;
+    padding-right: 5px;
+}
+.comment_link a {
+    /* text-decoration: none; */
 }

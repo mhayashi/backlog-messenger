@@ -18,9 +18,17 @@ var backloglib = function(spec, my) {
       throw(textStatus + ':' + errorThrown);
     }
   };
-  console.log(spec);
+  //console.log(spec);
   $.ajaxSetup(my.defaults);
 
+  my.parseDataSolo = function(data) {
+    var result = {};
+    $(data).find('struct member').each(function(){
+      result[$(this).find('name').text()] = $(this).find('value').text();
+    });
+    return result;
+  };
+  
   my.parseData = function(data) {
     var results = [];
     $(data).find('struct').each(function(){
@@ -40,11 +48,17 @@ var backloglib = function(spec, my) {
       $(this).children('struct').children('member').each(function(){
         var name = $(this).children('name').text();
         if (name === 'summary') {
-          result['summary'] = $(this).children('value').text();
+          result[name] = $(this).children('value').text();
         } else if (name === 'id') {
           if (result['summary']) {
-            result['id'] = parseInt($(this).children('value').text());
+            result[name] = parseInt($(this).children('value').text(), 10);
           }
+        } else if (name === 'key') {
+          result[name] = $(this).children('value').text();
+        } else if (name === 'url') {
+          result[name] = $(this).children('value').text();
+        } else if (name === 'updated_on') {
+          result[name] = $(this).children('value').text();
         }
       });
       if (result['summary']) {
@@ -61,11 +75,17 @@ var backloglib = function(spec, my) {
       $(this).children('struct').children('member').each(function(){
         var name = $(this).children('name').text();
         if (name === 'created_user') {
-          result[name] = $(this).find('value struct member value').eq(1).text();
+          result[name] = {
+            id: $(this).find('value struct member value').eq(0).text(),
+            name: $(this).find('value struct member value').eq(1).text()
+          };
         } else if (name === 'created_on') {
           result[name] = $(this).children('value').text();
         } else if (name === 'content') {
-          result[name] = $(this).children('value').text();
+          var text = $(this).children('value').text();
+          text = text.replace(/\r\n/g, "<br />");
+          text = text.replace(/(\n|\r)/g, "<br />");
+          result[name] = text;
         } else if (name === 'updated_on') {
           result[name] = $(this).children('value').text();
         } else if (name === 'id' && ($(this).closest('data value struct').length === 1)) {
@@ -73,7 +93,7 @@ var backloglib = function(spec, my) {
         }
       });
       if (result['created_user']) {
-        console.log(result);
+        //console.log(result);
         results.push(result);
       }
     });
@@ -97,7 +117,7 @@ var backloglib = function(spec, my) {
   that.getProjects = getProjects;
   
   var getUsers = function(projectId, callback) {
-    projectId = parseInt(projectId);
+    projectId = parseInt(projectId, 10);
     if (!projectId) {
       throw('Project ID is ' + projectId);
     }
@@ -113,17 +133,19 @@ var backloglib = function(spec, my) {
   that.getUsers = getUsers;
 
   var findIssue = function(projectId, assignerId, updated_on_min, callback) {
-    projectId = parseInt(projectId);
+    projectId = parseInt(projectId, 10);
     if (!projectId) {
       throw('Project ID is ' + projectId);
     }
-    assignerId = parseInt(assignerId);
+    assignerId = parseInt(assignerId, 10);
     if (!assignerId) {
       throw('Assigner ID is ' + assignerId);
     }
     var rpc = new XMLRPCMessage('backlog.findIssue');
     if (updated_on_min) {
-      rpc.addParameter({ projectId: projectId, assignerId: assignerId, updated_on_min: updated_on_min });
+      rpc.addParameter({ projectId: projectId,
+                         assignerId: assignerId,
+                         updated_on_min: updated_on_min });
     } else {
       rpc.addParameter({ projectId: projectId, assignerId: assignerId });
     }
@@ -137,7 +159,7 @@ var backloglib = function(spec, my) {
   that.findIssue = findIssue;
   
   var getComments = function(issueId, callback) {
-    issueId = parseInt(issueId);
+    issueId = parseInt(issueId, 10);
     if (!issueId) {
       throw('Issue ID is ' + issueId);
     }
@@ -155,23 +177,54 @@ var backloglib = function(spec, my) {
   };
   that.getComments = getComments;
 
-  var updateIssue = function(issueKey) {
-    issueKey = parseInt(issueKey);
+  var updateIssue = function(issueKey, comment, callback) {
+    if (development) console.log(issueKey, comment);
     if (!issueKey) {
       throw('Issue key is ' + issueKey);
     }
     var rpc = new XMLRPCMessage('backlog.updateIssue');
-    rpc.addParameter(issueKey);
+    rpc.addParameter({ key: issueKey,
+                       comment: comment });
     $.ajax({
       data: rpc.xml(),
       success: function(data, status, xhr) {
-        var comments = my.parseComments(data);
-        if (comments) {
-          callback(comments);
-        }
+        callback(my.parseIssues(data)[0]);
       }
     });
   };
+  that.updateIssue = updateIssue;
+  
+  var getUser = function(userId, callback) {
+    userId = parseInt(userId, 10);
+    if (!userId) {
+      throw('User ID is ' + userId);
+    }
+    var rpc = new XMLRPCMessage('backlog.getUser');
+    rpc.addParameter(userId);
+    $.ajax({
+      data: rpc.xml(),
+      success: function(data, status, xhr) {
+        callback(my.parseData(data));
+      }
+    });
+  };
+  that.getUser = getUser;
+
+  var getUserIcon = function(userId, callback) {
+    userId = parseInt(userId, 10);
+    if (!userId) {
+      throw('User ID is ' + userId);
+    }
+    var rpc = new XMLRPCMessage('backlog.getUserIcon');
+    rpc.addParameter(userId);
+    $.ajax({
+      data: rpc.xml(),
+      success: function(data, status, xhr) {
+        callback(my.parseDataSolo(data));
+      }
+    });
+  };
+  that.getUserIcon = getUserIcon;
   
   return that;
 };

@@ -1,33 +1,47 @@
-body {
+#container {
+	margin: 50px auto;
+	width: 600px;
+	background:#fff;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    border-radius: 15px;
+}
+#header {
+	background: #106927;
+	padding: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+#content {
+}
+#footer {
+	background: #106927;
 }
 h1 {
-    font-size: 16px;
-    color: #0a3616;
+    font-size: 20px;
+    color: #fff;
 }
-h2 {
-    font-size: 14px;
-    color: #0a3616;
-}
-h3 {
-    color: #0a3616;
-    margin-top: 16px;
-    margin-bottom: 8px;
-}
-li {
-    margin: 4px;
-}
-.optionsArea {
-    border: 1px dashed #A4B874;
+table {
+    width: 600px;
     margin: 10px;
-    padding: 20px 10px 20px 10px;
+	padding: 10px;
 }
-#saveGeneralComplete, #saveTargetComplete {
-    display: none;
-    background-color: #D5FFDF;
-    color: #006A1B;
-    font-size: 14px;
-    width: 260px;
+th {
+    font-weight: bold:
+    width: 200px;
+    text-align: right;
+    padding: 5px;
+}
+td {
+    width: 400px;
+    text-align: left;
+    padding: 5px;
+}
+#save-button {
     text-align: center;
-    margin: auto;
-    padding: 10px;
+	padding: 10px 15px 15px 15px;
+}
+button {
+    font-size: 15px;
+    width: 100px;
 }
