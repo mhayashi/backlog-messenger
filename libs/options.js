@@ -7,7 +7,6 @@
   };
 
   var saveOptions = function () {
-    console.log('aaa');
     localStorage.setItem('spaceId', $('input[name=spaceId]').val());
     localStorage.setItem('userId', $('input[name=userId]').val());
     localStorage.setItem('password', $('input[name=password]').val());
@@ -15,7 +14,6 @@
 
     $('#message').text('Saved!');
     $('#message').fadeOut('slow');
-    
     chrome.extension.getBackgroundPage().refresh(true);
   };
 

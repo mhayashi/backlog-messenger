@@ -38,10 +38,15 @@ td {
     padding: 5px;
 }
 #save-button {
-    text-align: center;
-	padding: 10px 15px 15px 15px;
+    /* text-align: center; */
+	padding: 10px 0px 15px 250px;
 }
 button {
+    /* margin-left: 50px; */
+    left: 200px;
     font-size: 15px;
     width: 100px;
+}
+#message {
+    
 }
