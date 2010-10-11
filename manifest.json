@@ -1,6 +1,6 @@
 {
   "name": "Backlog Messenger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Backlog Messenger",
   "browser_action": {
     "default_icon": "img/backlog-logo.gif",
