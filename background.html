@@ -4,7 +4,6 @@
 <script type="text/javascript" src="libs/backlog.js"></script>
 <script type="text/javascript" src="libs/utils.js"></script>
 <script type="text/javascript">
-
 var checkInterval = function() {
   var interval = localStorage.getItem('refreshInterval');
   if (!interval) {
@@ -28,10 +27,14 @@ var refresh = function(isInit) {
 };
 
 (function () {
+  //localStorage.clear();
   checkInterval();
   if (!(localStorage.getItem('userId') &&
         localStorage.getItem('password') &&
         localStorage.getItem('spaceId'))) {
+    if (!localStorage.getItem('lastChecked')) {
+      localStorage.setItem('lastChecked', JSON.stringify(new Date(1970, 1, 1).toString()));
+    }
     openTab(chrome.extension.getURL('options.html'));
   } else {
     refresh();

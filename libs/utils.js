@@ -51,12 +51,10 @@ var getComments = function(isInit) {
   var commentIds = [];
   var newComments = [];
   
-  if (!isInit) {
-    lastChecked = new Date(JSON.parse(localStorage.getItem('lastChecked')));
-    updated_on_min = lastChecked.getFullYear().toString()
-      + formatNum(2, (lastChecked.getMonth()+1).toString())
-      + formatNum(2, lastChecked.getDate().toString());
-  }
+  lastChecked = new Date(JSON.parse(localStorage.getItem('lastChecked')));
+  updated_on_min = lastChecked.getFullYear().toString()
+    + formatNum(2, (lastChecked.getMonth()+1).toString())
+    + formatNum(2, lastChecked.getDate().toString());
   
   backlog.getProjects(function(projects) {
     if (development) console.log(projects);
@@ -88,7 +86,6 @@ var getComments = function(isInit) {
                 }
               });
             }
-            localStorage.setItem('lastChecked', JSON.stringify(new Date().toString()));
           }
         });
         
@@ -104,7 +101,6 @@ var getComments = function(isInit) {
             }
           });
         }
-        localStorage.setItem('lastChecked', JSON.stringify(new Date().toString()));
       }
     }
   });
@@ -144,6 +140,7 @@ var getComments = function(isInit) {
           // save issue id index and comment id index
           localStorage.setItem('issueIds', JSON.stringify(issueIds));
           localStorage.setItem('commentIds', JSON.stringify(commentIds));
+          localStorage.setItem('lastChecked', JSON.stringify(new Date().toString()));
           if (newComments.length > 0) {
             chrome.extension.sendRequest({ newComments: newComments });
             // update badge count
